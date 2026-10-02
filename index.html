@@ -3,107 +3,108 @@
 <head>
 <meta charset="utf-8">
 <title>Lista de Compras</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F2F5F1">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Compras">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<script>
-/* =====================================================================
-   ÚNICA COISA PARA MUDAR NESTE ARQUIVO:
-   troque COLE_AQUI_O_LINK_DO_APP pelo link do seu app no Apps Script
-   (o que termina com /exec). Mantenha as aspas.
-   ===================================================================== */
-var LINK_DO_APP = 'https://script.google.com/macros/s/AKfycbydJHgDS2F0XRLLkTgYo-XlpR1NWT841z6HVpTP-Z1l_2wL31x71ryD9ltlR5Awv1TJ/exec';
-</script>
 <style>
-  :root{--fundo:#F2F5F1;--tinta:#1B2420;--suave:#637069}
-  @media (prefers-color-scheme:dark){:root{--fundo:#111714;--tinta:#ECF1ED;--suave:#9AA79F}}
-  html,body{margin:0;height:100%;background:var(--fundo);overflow:hidden;overscroll-behavior:none}
+  :root{--fundo:#F2F5F1;--sup:#FFFFFF;--tinta:#1B2420;--suave:#637069;--linha:#E1E7E1;--cor:#17855A}
+  @media (prefers-color-scheme:dark){:root{--fundo:#111714;--sup:#1A221E;--tinta:#ECF1ED;--suave:#9AA79F;--linha:#2A342F}}
+  *{box-sizing:border-box}
+  html{background:var(--fundo)}
   body{
-    position:fixed;inset:0;display:flex;
-    padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tinta);
+    margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px 20px;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tinta);line-height:1.45;
     -webkit-tap-highlight-color:transparent;
   }
-  .palco{position:relative;flex:1;min-width:0}
-  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .25s}
-  iframe.pronto{opacity:1}
-  .espera{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center}
-  .espera img{width:96px;height:96px;border-radius:22px}
-  .espera h1{margin:6px 0 0;font-size:1.25rem}
-  .espera p{margin:0;max-width:30ch;color:var(--suave);line-height:1.4}
-  .espera button{
-    margin-top:8px;height:52px;padding:0 24px;border:0;border-radius:26px;background:#17855A;color:#fff;
-    font:inherit;font-weight:700;cursor:pointer;
+  main{width:100%;max-width:400px;text-align:center}
+  img{width:96px;height:96px;border-radius:22px}
+  h1{margin:14px 0 6px;font-size:1.4rem}
+  p{margin:0;color:var(--suave)}
+  .passo{margin:14px 0 0;padding:16px 18px;border-radius:18px;background:var(--sup);border:1px solid var(--linha);text-align:left}
+  .passo h2{margin:0 0 4px;font-size:1rem}
+  .passo p{color:var(--tinta)}
+  .botao{
+    display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;margin-top:16px;border:0;border-radius:29px;
+    background:var(--cor);color:#fff;font:inherit;font-size:1.1rem;font-weight:800;text-decoration:none;cursor:pointer;
   }
-  .espera code{font-size:.9em;word-break:break-all}
+  .botao.leve{background:transparent;color:var(--cor);border:2px solid var(--cor)}
+  .nota{margin-top:14px;font-size:.9rem}
   [hidden]{display:none!important}
 </style>
 </head>
 <body>
-<div class="palco">
-  <div class="espera" id="espera">
-    <img src="icon-192.png" alt="">
-    <h1 id="titulo">Lista de Compras</h1>
-    <p id="texto">Abrindo…</p>
-    <button id="tentar" hidden>Tentar de novo</button>
+<main>
+  <img src="icon-192.png" alt="">
+  <h1>Lista de Compras</h1>
+  <p id="texto">Coloque o ícone na tela do celular e depois abra a lista.</p>
+
+  <div id="instalar">
+    <button class="botao leve" id="instalarAgora" hidden>Instalar no celular</button>
+    <div class="passo" data-so="android">
+      <h2>1. Coloque o ícone (Android, Chrome)</h2>
+      <p>Toque no menu ⋮ lá em cima e depois em <b>Adicionar à tela inicial</b>.</p>
+    </div>
+    <div class="passo" data-so="ios">
+      <h2>1. Coloque o ícone (iPhone, Safari)</h2>
+      <p>Toque no botão Compartilhar e depois em <b>Adicionar à Tela de Início</b>. Se aparecer a opção <b>Abrir como app da web</b>, desligue.</p>
+    </div>
+    <div class="passo">
+      <h2>2. Abra a lista</h2>
+      <p>Toque no botão abaixo. Na primeira vez o Google pede para entrar na sua conta e autorizar.</p>
+    </div>
   </div>
-  <iframe id="app" title="Lista de Compras" allow="clipboard-read; clipboard-write"></iframe>
-</div>
+
+  <!-- Este botão é um link comum: funciona mesmo se a abertura automática falhar. -->
+  <a class="botao" id="abrir" href="https://script.google.com/macros/s/AKfycbydJHgDS2F0XRLLkTgYo-XlpR1NWT841z6HVpTP-Z1l_2wL31x71ryD9ltlR5Awv1TJ/exec">Abrir a lista</a>
+  <p class="nota" id="nota">Depois de abrir uma vez, o ícone passa a abrir a lista direto.</p>
+</main>
 
 <script>
 (function () {
-  var quadro = document.getElementById('app');
+  var botao = document.getElementById('abrir');
   var texto = document.getElementById('texto');
-  var tentar = document.getElementById('tentar');
-  var link = String(LINK_DO_APP).trim();
+  var nota = document.getElementById('nota');
+  var passos = document.getElementById('instalar');
+  var link = botao.href;
+  var CHAVE = 'lc-abrir-direto';
 
-  // Link ainda não colado, ou colado errado: explica o que fazer
-  if (!/^https:\/\/script\.google\.com\/.+\/exec(\?.*)?$/.test(link)) {
-    document.getElementById('titulo').textContent = 'Falta colar o link do app';
-    texto.innerHTML = /\/dev(\?|$)/.test(link)
-      ? 'O link colado termina com <code>/dev</code>. Use o link da implantação, que termina com <code>/exec</code>.'
-      : 'Abra o arquivo <code>index.html</code> e troque <code>https://script.google.com/macros/s/AKfycbydJHgDS2F0XRLLkTgYo-XlpR1NWT841z6HVpTP-Z1l_2wL31x71ryD9ltlR5Awv1TJ/exec</code> pelo link do seu app no Apps Script (termina com <code>/exec</code>).';
-    return;
+  function lembrado() { try { return localStorage.getItem(CHAVE) === '1'; } catch (e) { return false; } }
+  function lembrar() { try { localStorage.setItem(CHAVE, '1'); } catch (e) {} }
+
+  botao.addEventListener('click', lembrar);
+
+  // mostra só as instruções do aparelho em uso
+  var ua = navigator.userAgent;
+  var so = /android/i.test(ua) ? 'android' : (/iphone|ipad|ipod/i.test(ua) ? 'ios' : '');
+  if (so) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-so]'), function (el) { el.hidden = el.getAttribute('data-so') !== so; });
   }
 
-  var espera = 0;
-  function abrir() {
-    tentar.hidden = true;
-    texto.textContent = 'Abrindo…';
-    quadro.classList.remove('pronto');
-    clearTimeout(espera);
-    espera = setTimeout(function () {
-      texto.textContent = 'Está demorando. Confira a internet.';
-      tentar.hidden = false;
-    }, 12000);
-    quadro.src = link;
+  // No Chrome do Android, quando o navegador oferece, um botão instala direto
+  var convite = null;
+  var instalarAgora = document.getElementById('instalarAgora');
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); convite = e; instalarAgora.hidden = false; });
+  instalarAgora.addEventListener('click', function () { if (convite) { convite.prompt(); convite = null; instalarAgora.hidden = true; } });
+
+  // Veio pelo ícone (ou já abriu antes neste aparelho)? Então abre a lista sozinho.
+  var modoApp = (window.matchMedia && (matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: minimal-ui)').matches)) ||
+    navigator.standalone === true || /[?&]app=1/.test(location.search);
+  var querInstalar = /instalar/.test(location.hash + location.search);
+  if (querInstalar || !(modoApp || lembrado())) return;
+
+  function naoAbriu() {
+    texto.textContent = 'A lista não abriu sozinha. Toque no botão.';
   }
-  quadro.addEventListener('load', function () {
-    if (!quadro.src) return;
-    clearTimeout(espera);
-    quadro.classList.add('pronto');
-  });
-  tentar.addEventListener('click', abrir);
-  window.addEventListener('online', function () { if (!quadro.classList.contains('pronto')) abrir(); });
-
-  // O app avisa a cor de fundo (clara ou escura) para a moldura acompanhar
-  window.addEventListener('message', function (e) {
-    var d = e.data;
-    if (!/^https:\/\/[a-z0-9-]+\.googleusercontent\.com$/.test(e.origin)) return;
-    if (!d || d.lc !== 'tema' || !/^#[0-9a-f]{6}$/i.test(d.fundo)) return;
-    document.documentElement.style.background = d.fundo;
-    document.body.style.background = d.fundo;
-    document.querySelector('meta[name="theme-color"]').setAttribute('content', d.fundo);
-  });
-
-  abrir();
+  passos.hidden = true;
+  nota.hidden = true;
+  texto.textContent = 'Abrindo…';
+  setTimeout(naoAbriu, 2500);
+  window.addEventListener('pageshow', function (e) { if (e.persisted) naoAbriu(); });
+  try { location.replace(link); } catch (e) { naoAbriu(); }
 })();
 </script>
 </body>
