@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Lista de Compras</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F2F5F1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Compras">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<script>
+/* =====================================================================
+   ÚNICA COISA PARA MUDAR NESTE ARQUIVO:
+   troque COLE_AQUI_O_LINK_DO_APP pelo link do seu app no Apps Script
+   (o que termina com /exec). Mantenha as aspas.
+   ===================================================================== */
+var LINK_DO_APP = 'https://script.google.com/macros/s/AKfycbydJHgDS2F0XRLLkTgYo-XlpR1NWT841z6HVpTP-Z1l_2wL31x71ryD9ltlR5Awv1TJ/exec';
+</script>
+<style>
+  :root{--fundo:#F2F5F1;--tinta:#1B2420;--suave:#637069}
+  @media (prefers-color-scheme:dark){:root{--fundo:#111714;--tinta:#ECF1ED;--suave:#9AA79F}}
+  html,body{margin:0;height:100%;background:var(--fundo);overflow:hidden;overscroll-behavior:none}
+  body{
+    position:fixed;inset:0;display:flex;
+    padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tinta);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .palco{position:relative;flex:1;min-width:0}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .25s}
+  iframe.pronto{opacity:1}
+  .espera{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center}
+  .espera img{width:96px;height:96px;border-radius:22px}
+  .espera h1{margin:6px 0 0;font-size:1.25rem}
+  .espera p{margin:0;max-width:30ch;color:var(--suave);line-height:1.4}
+  .espera button{
+    margin-top:8px;height:52px;padding:0 24px;border:0;border-radius:26px;background:#17855A;color:#fff;
+    font:inherit;font-weight:700;cursor:pointer;
+  }
+  .espera code{font-size:.9em;word-break:break-all}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="palco">
+  <div class="espera" id="espera">
+    <img src="icon-192.png" alt="">
+    <h1 id="titulo">Lista de Compras</h1>
+    <p id="texto">Abrindo…</p>
+    <button id="tentar" hidden>Tentar de novo</button>
+  </div>
+  <iframe id="app" title="Lista de Compras" allow="clipboard-read; clipboard-write"></iframe>
+</div>
+
+<script>
+(function () {
+  var quadro = document.getElementById('app');
+  var texto = document.getElementById('texto');
+  var tentar = document.getElementById('tentar');
+  var link = String(LINK_DO_APP).trim();
+
+  // Link ainda não colado, ou colado errado: explica o que fazer
+  if (!/^https:\/\/script\.google\.com\/.+\/exec(\?.*)?$/.test(link)) {
+    document.getElementById('titulo').textContent = 'Falta colar o link do app';
+    texto.innerHTML = /\/dev(\?|$)/.test(link)
+      ? 'O link colado termina com <code>/dev</code>. Use o link da implantação, que termina com <code>/exec</code>.'
+      : 'Abra o arquivo <code>index.html</code> e troque <code>https://script.google.com/macros/s/AKfycbydJHgDS2F0XRLLkTgYo-XlpR1NWT841z6HVpTP-Z1l_2wL31x71ryD9ltlR5Awv1TJ/exec</code> pelo link do seu app no Apps Script (termina com <code>/exec</code>).';
+    return;
+  }
+
+  var espera = 0;
+  function abrir() {
+    tentar.hidden = true;
+    texto.textContent = 'Abrindo…';
+    quadro.classList.remove('pronto');
+    clearTimeout(espera);
+    espera = setTimeout(function () {
+      texto.textContent = 'Está demorando. Confira a internet.';
+      tentar.hidden = false;
+    }, 12000);
+    quadro.src = link;
+  }
+  quadro.addEventListener('load', function () {
+    if (!quadro.src) return;
+    clearTimeout(espera);
+    quadro.classList.add('pronto');
+  });
+  tentar.addEventListener('click', abrir);
+  window.addEventListener('online', function () { if (!quadro.classList.contains('pronto')) abrir(); });
+
+  // O app avisa a cor de fundo (clara ou escura) para a moldura acompanhar
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (!/^https:\/\/[a-z0-9-]+\.googleusercontent\.com$/.test(e.origin)) return;
+    if (!d || d.lc !== 'tema' || !/^#[0-9a-f]{6}$/i.test(d.fundo)) return;
+    document.documentElement.style.background = d.fundo;
+    document.body.style.background = d.fundo;
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', d.fundo);
+  });
+
+  abrir();
+})();
+</script>
+</body>
+</html>
